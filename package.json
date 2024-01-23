@@ -1,0 +1,16 @@
+{
+  "name": "mega_project",
+  "version": "1.0.0",
+  "description": "Clone of Youtube",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "React",
+    "Nodejs",
+    "BackEnd"
+  ],
+  "author": "Vishal Mane",
+  "license": "ISC"
+}
