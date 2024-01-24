@@ -5,4 +5,10 @@ dotenv.config({
    path:'./env'
 })
 
-connect();
+connect()
+.then((res)=>{
+   console.log(res);
+})
+.catch((error)=>{
+   console.log("connection Error : ",error);
+})
