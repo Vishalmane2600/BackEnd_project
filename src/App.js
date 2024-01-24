@@ -1,4 +1,4 @@
-import  express  from "express";
+import  express, { Router }  from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 
@@ -13,4 +13,10 @@ app.use(express.urlencoded())
 app.use(express.static("public"))
 app.use(cookieParser())
 
-export default app
+// Importing router 
+import userRouter from "../routers/user.route.js";
+
+app.use("/user",userRouter)
+
+export {app} 
+//http://localhost:3000/user/register
