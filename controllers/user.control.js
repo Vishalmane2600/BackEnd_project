@@ -1,6 +1,5 @@
 import { asynchandler } from "../utils/asynchandler.js";
 import {ApiError} from "../utils/ApiError.js";
-import {upload} from "../middleware/multer.middle.js"
 import {User} from "../models/user.models.js"
 import {Apirespose} from "../utils/Apirespose.js"
 import {uploadTocloudinary} from "../utils/cloudinary.js"
@@ -8,24 +7,29 @@ import {uploadTocloudinary} from "../utils/cloudinary.js"
 const userRegister = asynchandler( async (req,res) =>{
     
    const {username,email,fullname,password} =  req.body
+    console.log(username)
+   if([username,email,fullname,password].some((field)=> field === "")){
+         throw new ApiError(400,"All Fields are Required !!","All Fields are Required !!")
+   } 
 
-   if([username,email,fullname,password].some((field)=> field?.trim()==="")){
-         throw new ApiError(400,"All Fields are Required !!")
-   }
-   const userExisted=  User.findOne({
+   const userExisted= await User.findOne({
         $or:[{email},{username}]
     })
     if(userExisted)
     {
-        throw new ApiError(401,"Email or Username already existed")
+        throw new ApiError(401,"Email or Username already existed","Email or Username already existed")
     }
    const avatarlocalpath =  req.files?.avatar[0]?.path;
-   const covlocalpath =  req.files?.coverimg[0]?.path;
-   if(!avatarlocalpath){
-    throw new ApiError(400,"Avatar is requires")
+   let covlocalpath ;
+   if(avatarlocalpath === undefined || avatarlocalpath === null){
+      throw new ApiError(400,"Avatar is requires","Avatar is requires")
+   }
+   if(req.files && req.files.coverimg[0] && req.files?.coverimg[0]?.path)
+   {
+    covlocalpath = req.files?.coverimg[0]?.path;
    }
    const Avatar =   await uploadTocloudinary(avatarlocalpath)
-   const coverimg =   await uploadTocloudinary(covlocalpath)
+   const coverImg =   await uploadTocloudinary(covlocalpath)
 
    if(!Avatar){
     throw new ApiError(402,"Avata image is required")
@@ -35,7 +39,7 @@ const userRegister = asynchandler( async (req,res) =>{
     avatar : Avatar.url,
     email,
     password,
-    coverimg: coverimg?.url || "",
+    coverimg: coverImg?.url || "",
     username
    })
 
